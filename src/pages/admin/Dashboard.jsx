@@ -195,6 +195,55 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-3 sm:p-4 lg:p-6 pb-20">
+      <style>{`
+        @keyframes float {
+          0%, 100% { transform: perspective(1000px) rotateX(5deg) rotateY(-5deg) translateY(0px); }
+          50% { transform: perspective(1000px) rotateX(5deg) rotateY(-5deg) translateY(-10px); }
+        }
+        
+        @keyframes pulse3d {
+          0%, 100% { transform: perspective(1000px) rotateX(5deg) rotateY(-5deg) scale(1); }
+          50% { transform: perspective(1000px) rotateX(5deg) rotateY(-5deg) scale(1.1); }
+        }
+        
+        @keyframes rotate3d {
+          0% { transform: perspective(1000px) rotateX(5deg) rotateY(-5deg); }
+          25% { transform: perspective(1000px) rotateX(10deg) rotateY(5deg); }
+          50% { transform: perspective(1000px) rotateX(-5deg) rotateY(10deg); }
+          75% { transform: perspective(1000px) rotateX(-10deg) rotateY(-5deg); }
+          100% { transform: perspective(1000px) rotateX(5deg) rotateY(-5deg); }
+        }
+        
+        .icon-3d {
+          transform: perspective(1000px) rotateX(5deg) rotateY(-5deg);
+          transition: all 0.3s ease;
+          box-shadow: 
+            0 10px 20px -5px rgba(0,0,0,0.3),
+            inset 0 3px 6px rgba(255,255,255,0.4),
+            0 0 0 2px rgba(255,255,255,0.1);
+        }
+        
+        .icon-3d:hover {
+          transform: perspective(1000px) rotateX(-10deg) rotateY(10deg) scale(1.1);
+          box-shadow: 
+            0 15px 30px -5px rgba(0,0,0,0.4),
+            inset 0 3px 6px rgba(255,255,255,0.5),
+            0 0 0 3px rgba(255,255,255,0.2);
+        }
+        
+        .icon-3d-animate {
+          animation: float 3s ease-in-out infinite;
+        }
+        
+        .icon-3d-pulse {
+          animation: pulse3d 2s ease-in-out infinite;
+        }
+        
+        .icon-3d-rotate {
+          animation: rotate3d 4s ease-in-out infinite;
+        }
+      `}</style>
+      
       <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
         {/* Stats Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
@@ -415,7 +464,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Modal */}
+      {/* Enhanced 3D Modal */}
       {showModal && selectedVehicle && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-3 sm:p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col">
@@ -437,7 +486,7 @@ const Dashboard = () => {
               </button>
             </div>
 
-            {/* Modal Body */}
+            {/* Modal Body with 3D Icons */}
             <div className="flex-1 overflow-y-auto p-4 sm:p-6">
               <div className="space-y-4">
                 {selectedVehicle.trackingSteps.map((step, index) => {
@@ -453,14 +502,32 @@ const Dashboard = () => {
                         step.status === 'delayed' ? 'bg-red-50 border-red-400' :
                         'bg-gray-50 border-gray-300'
                       }`}>
-                        <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center shadow-lg ${
-                          step.status === 'completed' && !step.delay ? 'bg-gradient-to-br from-green-500 to-green-600' : 
-                          step.status === 'completed' && step.delay ? 'bg-gradient-to-br from-red-500 to-red-600' : 
-                          step.status === 'inProgress' ? 'bg-gradient-to-br from-orange-500 to-orange-600' : 
-                          step.status === 'delayed' ? 'bg-gradient-to-br from-red-600 to-red-700' :
-                          'bg-gradient-to-br from-gray-400 to-gray-500'
+                        {/* 3D Icon Container */}
+                        <div className={`flex-shrink-0 w-16 h-16 rounded-xl flex items-center justify-center icon-3d ${
+                          step.status === 'inProgress' ? 'icon-3d-pulse' : 
+                          step.status === 'delayed' ? 'icon-3d-rotate' : 
+                          'icon-3d-animate'
+                        } ${
+                          step.status === 'completed' && !step.delay ? 'bg-gradient-to-br from-green-500 via-green-600 to-green-700' : 
+                          step.status === 'completed' && step.delay ? 'bg-gradient-to-br from-red-500 via-red-600 to-red-700' : 
+                          step.status === 'inProgress' ? 'bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700' : 
+                          step.status === 'delayed' ? 'bg-gradient-to-br from-red-600 via-red-700 to-red-800' :
+                          'bg-gradient-to-br from-gray-400 via-gray-500 to-gray-600'
                         }`}>
-                          <Icon className="w-6 h-6 text-white" />
+                          <Icon 
+                            className="w-8 h-8 text-white" 
+                            style={{
+                              filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.4))',
+                              transform: 'translateZ(20px)'
+                            }} 
+                          />
+                          <div 
+                            className="absolute inset-0 rounded-xl"
+                            style={{
+                              background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 50%, rgba(0,0,0,0.2) 100%)',
+                              pointerEvents: 'none'
+                            }}
+                          />
                         </div>
                         
                         <div className="flex-1 min-w-0">
@@ -468,22 +535,32 @@ const Dashboard = () => {
                             <h3 className="text-base sm:text-lg font-bold text-gray-900">{step.name}</h3>
                             <div className="flex items-center gap-1 flex-shrink-0">
                               {step.status === 'completed' && !step.delay && (
-                                <CheckCircle className="w-5 h-5 text-green-600" />
+                                <div className="icon-3d w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
+                                  <CheckCircle className="w-5 h-5 text-white" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }} />
+                                </div>
                               )}
                               {step.status === 'completed' && step.delay && (
-                                <>
-                                  <AlertTriangle className="w-5 h-5 text-red-600" />
-                                  <CheckCircle className="w-5 h-5 text-red-600" />
-                                </>
+                                <div className="flex gap-1">
+                                  <div className="icon-3d w-8 h-8 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center">
+                                    <AlertTriangle className="w-5 h-5 text-white" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }} />
+                                  </div>
+                                  <div className="icon-3d w-8 h-8 rounded-full bg-gradient-to-br from-red-600 to-red-700 flex items-center justify-center">
+                                    <CheckCircle className="w-5 h-5 text-white" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }} />
+                                  </div>
+                                </div>
                               )}
                               {step.status === 'inProgress' && (
-                                <Clock className="w-5 h-5 text-orange-600 animate-pulse" />
+                                <div className="icon-3d-pulse w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center">
+                                  <Clock className="w-5 h-5 text-white" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }} />
+                                </div>
                               )}
                               {step.status === 'delayed' && (
-                                <AlertTriangle className="w-5 h-5 text-red-600 animate-pulse" />
+                                <div className="icon-3d-rotate w-8 h-8 rounded-full bg-gradient-to-br from-red-600 to-red-700 flex items-center justify-center">
+                                  <AlertTriangle className="w-5 h-5 text-white" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }} />
+                                </div>
                               )}
                               {step.status === 'pending' && (
-                                <div className="w-5 h-5 rounded-full border-2 border-gray-400" />
+                                <div className="icon-3d w-8 h-8 rounded-full bg-gradient-to-br from-gray-300 to-gray-400 border-2 border-gray-500 flex items-center justify-center" />
                               )}
                             </div>
                           </div>
@@ -499,7 +576,9 @@ const Dashboard = () => {
                           {step.delay && step.delayReason && (
                             <div className="mt-3 p-3 bg-red-100 border-2 border-red-300 rounded-lg">
                               <div className="flex items-start gap-2">
-                                <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                                <div className="icon-3d w-8 h-8 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center flex-shrink-0">
+                                  <AlertTriangle className="w-5 h-5 text-white" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }} />
+                                </div>
                                 <div className="flex-1 min-w-0">
                                   <p className="text-xs font-bold text-red-800 uppercase tracking-wide mb-1">Delay Report</p>
                                   <p className="text-sm text-red-700 leading-relaxed">{step.delayReason}</p>
@@ -511,12 +590,18 @@ const Dashboard = () => {
                       </div>
                       
                       {!isLast && (
-                        <div className="ml-6 pl-0.5">
+                        <div className="ml-8 pl-0.5">
                           <div className={`w-1 h-4 rounded-full ${
-                            step.status === 'completed' || step.status === 'inProgress' ? 'bg-green-400' : 
-                            step.status === 'delayed' ? 'bg-red-400' : 
-                            'bg-gray-300'
-                          }`} />
+                            step.status === 'completed' || step.status === 'inProgress' ? 'bg-gradient-to-b from-green-400 to-green-500' : 
+                            step.status === 'delayed' ? 'bg-gradient-to-b from-red-400 to-red-500' : 
+                            'bg-gradient-to-b from-gray-300 to-gray-400'
+                          }`} style={{
+                            boxShadow: step.status === 'completed' || step.status === 'inProgress' 
+                              ? '0 0 8px rgba(34, 197, 94, 0.5)' 
+                              : step.status === 'delayed' 
+                              ? '0 0 8px rgba(239, 68, 68, 0.5)' 
+                              : 'none'
+                          }} />
                         </div>
                       )}
                     </div>
@@ -529,7 +614,7 @@ const Dashboard = () => {
             <div className="px-4 sm:px-6 py-4 bg-gray-50 border-t border-gray-200 flex-shrink-0">
               <button
                 onClick={() => setShowModal(false)}
-                className="w-full px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white text-base font-bold rounded-xl hover:from-red-700 hover:to-red-800 transition-all shadow-lg"
+                className="w-full px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white text-base font-bold rounded-xl hover:from-red-700 hover:to-red-800 transition-all shadow-lg icon-3d"
               >
                 Close
               </button>

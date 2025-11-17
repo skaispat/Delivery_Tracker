@@ -52,7 +52,7 @@ const Login = () => {
                 <img 
                   src="/Image/logo.jpg" 
                   alt="Sarthak TMT Logo"
-                  className="h-16 object-contain"
+                  className="h-14 object-contain"
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}
@@ -60,7 +60,7 @@ const Login = () => {
                 <img 
                   src="/Image/JSW.png" 
                   alt="JSW One TMT Logo"
-                  className="h-12 object-contain"
+                  className="h-14 object-contain"
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}
@@ -71,7 +71,7 @@ const Login = () => {
               </h1>
             </div>
 
-            {/* Form and Hero Container */}
+            {/* Form Container */}
             <div className="relative w-full max-w-sm flex justify-center">
               <div className="relative" style={{ width: '280px' }}>
                 
@@ -129,27 +129,6 @@ const Login = () => {
                     {isLoading ? 'Signing in...' : 'Sign in'}
                   </button>
                 </form>
-
-                {/* Hero Image - Overlapping from Right */}
-                <div 
-                  className="absolute pointer-events-none"
-                  style={{
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    right: '-100px',
-                    width: '200px',
-                    zIndex: 5
-                  }}
-                >
-                  <img 
-                    src="/Image/icon.png" 
-                    alt="TMT Superhero"
-                    className="w-full h-auto object-contain"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                    }}
-                  />
-                </div>
               </div>
             </div>
           </div>
@@ -168,7 +147,7 @@ const Login = () => {
                     <img 
                       src="/Image/logo.jpg" 
                       alt="Sarthak TMT Logo"
-                      className="h-24 object-contain"
+                      className="h-20 object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
                       }}
@@ -176,7 +155,7 @@ const Login = () => {
                     <img 
                       src="/Image/JSW.png" 
                       alt="JSW One TMT Logo"
-                      className="h-16 object-contain"
+                      className="h-20 object-contain"
                       onError={(e) => {
                         e.target.style.display = 'none';
                       }}
@@ -243,7 +222,7 @@ const Login = () => {
                 </form>
               </div>
 
-              {/* Right Side - Hero Image (Desktop) */}
+              {/* Right Side - Hero Image (Desktop Only) */}
               <div className="flex items-center justify-center">
                 <img 
                   src="/Image/icon.png" 
